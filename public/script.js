@@ -3,10 +3,11 @@ const scoresApiUrl = "/api/games";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 const scoresSection = document.getElementById("scores");
+const upcomingGamesDiv = document.getElementById("upcoming-games");
+const lastGameDiv = document.getElementById("last-game");
 
 let lastRequestTime = 0;
 const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
-let gameFetchIntervalId = null; // ID de l'intervalle d'appel pour les matchs
 
 async function fetchPlayers(query = "") {
   const now = Date.now();
@@ -59,13 +60,16 @@ function displayPlayers(players) {
   });
 }
 
-// Nouvelle écoute sur le bouton de recherche
-document.getElementById("search-button").addEventListener("click", () => {
-  const query = searchInput.value.trim();
-  if (query !== "") {
-    fetchPlayers(query);
-  }
-});
+// Écoute sur le bouton de recherche
+const searchButton = document.getElementById("search-button");
+if (searchButton) {
+  searchButton.addEventListener("click", () => {
+    const query = searchInput.value.trim();
+    if (query !== "") {
+      fetchPlayers(query);
+    }
+  });
+}
 
 // --- Partie affichage des scores ---
 async function fetchGames() {
@@ -88,69 +92,74 @@ async function fetchGames() {
     console.log("Matchs de la semaine :", data);
 
     if (data.data && data.data.length > 0) {
-      // Filtrer les matchs à venir (non terminés)
-      const upcomingGames = data.data.filter((g) => g.status !== "Final");
+      const games = data.data;
 
-      // Trier les matchs par date et heure (si disponible)
-      const sortedGames = upcomingGames.sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
-      );
+      const upcomingGames = games
+        .filter((g) => g.status !== "Final")
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 4);
 
-      // Trouver le dernier match terminé (status Final)
-      const finishedGames = data.data.filter((g) => g.status === "Final");
-      const lastGame = finishedGames.sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      )[0];
+      const finishedGames = games
+        .filter((g) => g.status === "Final")
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      // Limiter à 4 matchs
-      const gamesToDisplay = sortedGames.slice(0, 4);
-
-      if (gamesToDisplay.length === 0 && !lastGame) {
-        scoresSection.innerHTML =
-          "<p>Aucun match récent ou à venir n’a été trouvé sur cette période.</p>";
-        return;
-      }
+      const lastGame = finishedGames.length > 0 ? finishedGames[0] : null;
 
       if (lastGame) {
-        const div = document.createElement("div");
-        div.classList.add("game-score");
-        div.innerHTML = `
-          <strong>${lastGame.home_team.full_name}</strong> vs <strong>${lastGame.visitor_team.full_name}</strong><br>
-          Score final : ${lastGame.home_team_score} - ${lastGame.visitor_team_score}<br>
-          ${lastGame.status}
-        `;
-        scoresSection.appendChild(div);
+        lastGameDiv.innerHTML = createGameCard(lastGame, true);
+      } else {
+        lastGameDiv.innerHTML = "<p>Aucun match terminé récemment.</p>";
       }
 
-      displayGames(gamesToDisplay);
+      if (upcomingGames.length > 0) {
+        upcomingGamesDiv.innerHTML = upcomingGames
+          .map((game) => createGameCard(game))
+          .join("");
+      } else {
+        upcomingGamesDiv.innerHTML = "<p>Aucun match à venir.</p>";
+      }
     } else {
-      scoresSection.innerHTML = "<p>Aucun match à venir cette semaine.</p>";
+      upcomingGamesDiv.innerHTML = "<p>Aucun match trouvé cette semaine.</p>";
+      lastGameDiv.innerHTML = "";
     }
   } catch (error) {
     console.error("Erreur lors de la récupération des matchs :", error);
-    if (scoresSection) {
-      scoresSection.innerHTML = "<p>Erreur de récupération des scores.</p>";
-    }
+    upcomingGamesDiv.innerHTML = "<p>Erreur de récupération des scores.</p>";
   }
 }
 
-function displayGames(games) {
-  if (games.length === 0) {
-    scoresSection.innerHTML = "<p>Aucun match aujourd'hui.</p>";
-    return;
-  }
-
-  games.forEach((game) => {
-    const div = document.createElement("div");
-    div.classList.add("game-score");
-    div.innerHTML = `
-      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-      Score : ${game.home_team_score} - ${game.visitor_team_score}<br>
-      ${game.status}
-    `;
-    scoresSection.appendChild(div);
+function createGameCard(game, isLastGame = false) {
+  const date = new Date(game.date).toLocaleDateString("fr-FR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
+
+  const isLive = game.status.toLowerCase().includes("in progress");
+  const isFinal = game.status === "Final";
+  const cardClass = isLive
+    ? "game-score live"
+    : isFinal
+      ? "game-score final"
+      : "game-score";
+  const statusText = isFinal ? "Terminé" : game.status;
+  const isPlayoff = game.postseason;
+
+  return `
+    <div class="${cardClass}${isPlayoff ? " playoff" : ""}">
+      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
+      ${isLastGame ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
+      ${statusText}<br>
+      <div class="date">${date}</div>
+      <div class="details">
+        ${isPlayoff ? "Match de playoffs" : ""}
+        ${isLive ? `<br>Période actuelle : ${game.period}` : ""}
+      </div>
+    </div>
+  `;
 }
 
-// Lancer la récupération des scores une seule fois au chargement
 fetchGames();

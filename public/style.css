@@ -73,9 +73,35 @@ main {
 .game-score {
   margin-bottom: 15px;
   padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-left: 5px solid #007bff;
+  border-radius: 6px;
+  background-color: #fff;
+  transition:
+    transform 0.2s,
+    background-color 0.3s;
+  cursor: pointer;
+}
+
+.game-score:hover {
+  background-color: #f0f8ff;
+  transform: translateY(-2px);
+}
+
+.game-score .date {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.game-score.live {
+  border-left-color: #e53935;
+  background-color: #fff3f3;
+}
+
+.game-score.final {
+  border-left-color: #4caf50;
+  background-color: #f4fff3;
 }
 
 /* Search section separation style */
@@ -103,4 +129,15 @@ main {
 aside {
   flex: 1;
   min-width: 300px;
+}
+
+.game-score.playoff {
+  border-left-color: #ffa000;
+  background-color: #fff8e1;
+}
+
+.game-score .details {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #444;
 }
