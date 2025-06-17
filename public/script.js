@@ -8,9 +8,17 @@ async function fetchPlayers(query = "") {
       `${apiUrl}?search=${encodeURIComponent(query)}`
     );
     const data = await response.json();
+    console.log("Réponse API :", data); // Pour débogage
+
+    if (!data || !data.data) {
+      playerList.innerHTML = "<li>Erreur : format de données inattendu</li>";
+      return;
+    }
+
     displayPlayers(data.data);
   } catch (error) {
     console.error("Erreur lors de la récupération des joueurs :", error);
+    playerList.innerHTML = "<li>Erreur de connexion à l'API</li>";
   }
 }
 
