@@ -1,14 +1,30 @@
 const apiUrl = "/api/players";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
+const errorMessage = document.getElementById("error-message");
+
+let requestTimestamps = [];
+
+function isRateLimited() {
+  const now = Date.now();
+  requestTimestamps = requestTimestamps.filter((ts) => now - ts < 60000);
+  return requestTimestamps.length >= 5;
+}
 
 async function fetchPlayers(query = "") {
+  if (isRateLimited()) {
+    const msg =
+      "⚠️ Limite de 5 requêtes par minute atteinte. Réessayez plus tard.";
+    console.warn(msg);
+    errorMessage.style.display = "block";
+    errorMessage.textContent = msg;
+    return;
+  }
+
+  requestTimestamps.push(Date.now());
+  errorMessage.style.display = "none";
   playerList.innerHTML = "<li>Chargement...</li>";
   try {
-    console.log(
-      "Fetching players with URL:",
-      `${apiUrl}?search=${encodeURIComponent(query)}`
-    );
     const response = await fetch(
       `${apiUrl}?search=${encodeURIComponent(query)}`
     );
