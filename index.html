@@ -11,11 +11,23 @@
       <h1>Consultation des scores NBA</h1>
       <input type="date" id="datePicker" />
       <button id="loadScores">Afficher les scores</button>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Rechercher un joueur..."
+      />
+      <ul id="player-list"></ul>
     </header>
 
     <main>
       <section id="scores">
         <!-- Les scores s'afficheront ici -->
+      </section>
+      <section id="player-details" style="display: none">
+        <h2>Détails du joueur</h2>
+        <p id="player-name"></p>
+        <p id="player-team"></p>
+        <p id="player-position"></p>
       </section>
     </main>
 

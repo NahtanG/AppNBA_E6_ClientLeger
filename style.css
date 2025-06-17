@@ -1,0 +1,61 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+h1,
+h2 {
+  margin-bottom: 15px;
+  color: #222;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#search-input {
+  margin: 20px;
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
+}
+
+#player-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#player-list li {
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #f2f2f2;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#player-list li:hover {
+  background-color: #e0e0e0;
+}
+
+#player-details {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+  max-width: 400px;
+}

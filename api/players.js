@@ -1,0 +1,17 @@
+export default async function handler(req, res) {
+  const { search = "" } = req.query;
+  const url = `https://www.balldontlie.io/api/v1/players?search=${encodeURIComponent(search)}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Erreur API externe" });
+    }
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Erreur serveur", details: error.message });
+  }
+}
