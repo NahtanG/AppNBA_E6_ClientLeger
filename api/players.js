@@ -3,7 +3,11 @@ export default async function handler(req, res) {
   const url = `https://api.balldontlie.io/v1/players?search=${encodeURIComponent(search)}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`,
+      },
+    });
 
     if (!response.ok) {
       return res
