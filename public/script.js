@@ -3,10 +3,10 @@ const scoresApiUrl = "/api/games";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 const scoresSection = document.getElementById("scores");
-const searchButton = document.getElementById("search-button");
 
 let lastRequestTime = 0;
 const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
+let gameFetchIntervalId = null; // ID de l'intervalle d'appel pour les matchs
 
 async function fetchPlayers(query = "") {
   const now = Date.now();
@@ -59,38 +59,36 @@ function displayPlayers(players) {
   });
 }
 
-searchButton.addEventListener("click", () => {
+searchInput.addEventListener("input", () => {
   const query = searchInput.value.trim();
-  if (query) fetchPlayers(query);
+  fetchPlayers(query);
 });
 
-searchInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    const query = searchInput.value.trim();
-    if (query) fetchPlayers(query);
-  }
-});
+fetchPlayers();
 
 // --- Partie affichage des scores ---
-async function fetchGames(date = new Date()) {
-  const formatted = date.toISOString().split("T")[0];
+async function fetchGames() {
+  const today = new Date().toISOString().split("T")[0];
   try {
     const response = await fetch(
-      `${scoresApiUrl}?start_date=${formatted}&end_date=${formatted}`
+      `${scoresApiUrl}?start_date=${today}&end_date=${today}`
     );
     const data = await response.json();
     console.log("Matchs du jour :", data);
+
     if (data.data && data.data.length > 0) {
       displayGames(data.data);
-    } else {
-      const nextDate = new Date(date);
-      nextDate.setDate(date.getDate() + 1);
-      if (nextDate.getDate() - new Date().getDate() <= 10) {
-        fetchGames(nextDate); // Essayer le jour suivant
-      } else {
-        scoresSection.innerHTML = "<p>Aucun match prévu cette semaine.</p>";
+
+      // Arrêter les appels automatiques une fois qu'on a des matchs
+      if (gameFetchIntervalId !== null) {
+        clearInterval(gameFetchIntervalId);
+        gameFetchIntervalId = null;
+        console.log("Matchs récupérés. Arrêt des requêtes périodiques.");
       }
+      return;
     }
+
+    scoresSection.innerHTML = "<p>Aucun match prévu aujourd'hui.</p>";
   } catch (error) {
     console.error("Erreur lors de la récupération des matchs :", error);
     if (scoresSection) {
@@ -118,5 +116,6 @@ function displayGames(games) {
   });
 }
 
+// Lancer la récupération des scores toutes les 20 secondes jusqu'à obtention
 fetchGames();
-setInterval(fetchGames, 15000);
+gameFetchIntervalId = setInterval(fetchGames, 20000);
