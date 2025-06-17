@@ -1,29 +1,22 @@
 const apiUrl = "/api/players";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
-const errorMessage = document.getElementById("error-message");
+const searchButton = document.getElementById("search-button");
 
-let requestTimestamps = [];
-
-function isRateLimited() {
-  const now = Date.now();
-  requestTimestamps = requestTimestamps.filter((ts) => now - ts < 60000);
-  return requestTimestamps.length >= 5;
-}
+let lastRequestTime = 0;
+const REQUEST_INTERVAL = 12000; // 12 secondes entre les requêtes
 
 async function fetchPlayers(query = "") {
-  if (isRateLimited()) {
-    const msg =
-      "⚠️ Limite de 5 requêtes par minute atteinte. Réessayez plus tard.";
-    console.warn(msg);
-    errorMessage.style.display = "block";
-    errorMessage.textContent = msg;
+  const now = Date.now();
+  if (now - lastRequestTime < REQUEST_INTERVAL) {
+    playerList.innerHTML =
+      "<li>Veuillez patienter avant une nouvelle recherche (limite API atteinte)</li>";
     return;
   }
 
-  requestTimestamps.push(Date.now());
-  errorMessage.style.display = "none";
+  lastRequestTime = now;
   playerList.innerHTML = "<li>Chargement...</li>";
+
   try {
     const response = await fetch(
       `${apiUrl}?search=${encodeURIComponent(query)}`
@@ -67,9 +60,11 @@ function displayPlayers(players) {
   });
 }
 
-searchInput.addEventListener("input", () => {
+searchButton.addEventListener("click", () => {
   const query = searchInput.value.trim();
-  fetchPlayers(query);
+  if (query.length > 0) {
+    fetchPlayers(query);
+  } else {
+    playerList.innerHTML = "<li>Veuillez entrer un nom de joueur</li>";
+  }
 });
-
-fetchPlayers();
