@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const { search = "" } = req.query;
-  const url = `https://www.balldontlie.io/api/v1/players?search=${encodeURIComponent(search)}`;
+  const url = `https://balldontlie.io/api/v1/players?search=${encodeURIComponent(search)}`;
 
   try {
     const response = await fetch(url);
