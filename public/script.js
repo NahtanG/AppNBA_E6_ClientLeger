@@ -1,22 +1,20 @@
 const apiUrl = "/api/players";
+const scoresApiUrl = "/api/games";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
-const searchButton = document.getElementById("search-button");
+const scoresSection = document.getElementById("scores");
 
 let lastRequestTime = 0;
-const REQUEST_INTERVAL = 12000; // 12 secondes entre les requêtes
+const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
 
 async function fetchPlayers(query = "") {
   const now = Date.now();
   if (now - lastRequestTime < REQUEST_INTERVAL) {
-    playerList.innerHTML =
-      "<li>Veuillez patienter avant une nouvelle recherche (limite API atteinte)</li>";
+    console.warn("Limite atteinte. Patientez avant une nouvelle recherche.");
     return;
   }
-
   lastRequestTime = now;
   playerList.innerHTML = "<li>Chargement...</li>";
-
   try {
     const response = await fetch(
       `${apiUrl}?search=${encodeURIComponent(query)}`
@@ -60,11 +58,52 @@ function displayPlayers(players) {
   });
 }
 
-searchButton.addEventListener("click", () => {
+document.getElementById("search-button").addEventListener("click", () => {
   const query = searchInput.value.trim();
-  if (query.length > 0) {
+  if (query) {
     fetchPlayers(query);
-  } else {
-    playerList.innerHTML = "<li>Veuillez entrer un nom de joueur</li>";
   }
 });
+
+// --- Partie affichage des scores ---
+async function fetchGames() {
+  const today = new Date().toISOString().split("T")[0];
+  try {
+    const response = await fetch(
+      `${scoresApiUrl}?start_date=${today}&end_date=${today}`
+    );
+    const data = await response.json();
+    console.log("Matchs du jour :", data);
+    if (!data || !data.data) {
+      scoresSection.innerHTML = "<p>Aucun match prévu aujourd'hui.</p>";
+      return;
+    }
+    displayGames(data.data);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des matchs :", error);
+    scoresSection.innerHTML = "<p>Erreur de récupération des scores.</p>";
+  }
+}
+
+function displayGames(games) {
+  scoresSection.innerHTML = "";
+  if (games.length === 0) {
+    scoresSection.innerHTML = "<p>Aucun match aujourd'hui.</p>";
+    return;
+  }
+
+  games.forEach((game) => {
+    const div = document.createElement("div");
+    div.classList.add("game-score");
+    div.innerHTML = `
+      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
+      Score : ${game.home_team_score} - ${game.visitor_team_score}<br>
+      ${game.status}
+    `;
+    scoresSection.appendChild(div);
+  });
+}
+
+// Lancer la récupération des scores toutes les 15 secondes
+fetchGames();
+setInterval(fetchGames, 15000);
