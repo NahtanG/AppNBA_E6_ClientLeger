@@ -67,8 +67,6 @@ document.getElementById("search-button").addEventListener("click", () => {
   }
 });
 
-fetchPlayers();
-
 // --- Partie affichage des scores ---
 async function fetchGames() {
   const today = new Date();
