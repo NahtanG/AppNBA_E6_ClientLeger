@@ -59,9 +59,12 @@ function displayPlayers(players) {
   });
 }
 
-searchInput.addEventListener("input", () => {
+// Nouvelle écoute sur le bouton de recherche
+document.getElementById("search-button").addEventListener("click", () => {
   const query = searchInput.value.trim();
-  fetchPlayers(query);
+  if (query !== "") {
+    fetchPlayers(query);
+  }
 });
 
 fetchPlayers();
