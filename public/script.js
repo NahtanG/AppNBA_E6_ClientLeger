@@ -5,6 +5,10 @@ const searchInput = document.getElementById("search-input");
 async function fetchPlayers(query = "") {
   playerList.innerHTML = "<li>Chargement...</li>";
   try {
+    console.log(
+      "Fetching players with URL:",
+      `${apiUrl}?search=${encodeURIComponent(query)}`
+    );
     const response = await fetch(
       `${apiUrl}?search=${encodeURIComponent(query)}`
     );
