@@ -3,12 +3,13 @@ const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 
 async function fetchPlayers(query = "") {
+  playerList.innerHTML = "<li>Chargement...</li>";
   try {
     const response = await fetch(
       `${apiUrl}?search=${encodeURIComponent(query)}`
     );
     const data = await response.json();
-    console.log("Réponse API :", data); // Pour débogage
+    console.log("Réponse API :", data);
 
     if (!data || !data.data) {
       playerList.innerHTML = "<li>Erreur : format de données inattendu</li>";
@@ -18,7 +19,8 @@ async function fetchPlayers(query = "") {
     displayPlayers(data.data);
   } catch (error) {
     console.error("Erreur lors de la récupération des joueurs :", error);
-    playerList.innerHTML = "<li>Erreur de connexion à l'API</li>";
+    playerList.innerHTML =
+      "<li>Erreur de connexion à l'API ou données non disponibles</li>";
   }
 }
 
@@ -50,4 +52,4 @@ searchInput.addEventListener("input", () => {
   fetchPlayers(query);
 });
 
-fetchPlayers(); // facultatif pour affichage initial
+fetchPlayers();

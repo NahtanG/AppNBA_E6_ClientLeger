@@ -3,14 +3,12 @@ export default async function handler(req, res) {
   const url = `https://api.balldontlie.io/v1/players?search=${encodeURIComponent(search)}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`,
-      },
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: "Erreur API externe" });
+      return res
+        .status(response.status)
+        .json({ error: "Erreur lors de l'appel à l'API externe" });
     }
 
     const data = await response.json();
