@@ -9,29 +9,35 @@
   <body>
     <header>
       <h1>Consultation NBA</h1>
-
-      <section id="search-section">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Rechercher un joueur..."
-        />
-        <button id="search-button">Rechercher</button>
-        <ul id="player-list"></ul>
-      </section>
     </header>
 
-    <main>
+    <main class="main-container">
       <section id="scores">
-        <!-- Les scores s'afficheront ici -->
+        <h2>Prochains matchs</h2>
+        <div id="upcoming-games"></div>
+
+        <h2>Dernier match terminé</h2>
+        <div id="last-game"></div>
       </section>
 
-      <section id="player-details" style="display: none">
-        <h2>Détails du joueur</h2>
-        <p id="player-name"></p>
-        <p id="player-team"></p>
-        <p id="player-position"></p>
-      </section>
+      <aside>
+        <section id="search-section">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Rechercher un joueur..."
+          />
+          <button id="search-button">Rechercher</button>
+          <ul id="player-list"></ul>
+        </section>
+
+        <section id="player-details" style="display: none">
+          <h2>Détails du joueur</h2>
+          <p id="player-name"></p>
+          <p id="player-team"></p>
+          <p id="player-position"></p>
+        </section>
+      </aside>
     </main>
 
     <script src="script.js"></script>

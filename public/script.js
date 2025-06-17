@@ -68,27 +68,63 @@ fetchPlayers();
 
 // --- Partie affichage des scores ---
 async function fetchGames() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const nextWeek = new Date();
+  nextWeek.setDate(today.getDate() + 6);
+
+  const lastWeek = new Date();
+  lastWeek.setDate(today.getDate() - 6);
+  const lastDate = lastWeek.toISOString().split("T")[0];
+
+  const startDate = today.toISOString().split("T")[0];
+  const endDate = nextWeek.toISOString().split("T")[0];
+
   try {
     const response = await fetch(
-      `${scoresApiUrl}?start_date=${today}&end_date=${today}`
+      `${scoresApiUrl}?start_date=${lastDate}&end_date=${endDate}`
     );
     const data = await response.json();
-    console.log("Matchs du jour :", data);
+    console.log("Matchs de la semaine :", data);
 
     if (data.data && data.data.length > 0) {
-      displayGames(data.data);
+      // Filtrer les matchs à venir (non terminés)
+      const upcomingGames = data.data.filter((g) => g.status !== "Final");
 
-      // Arrêter les appels automatiques une fois qu'on a des matchs
-      if (gameFetchIntervalId !== null) {
-        clearInterval(gameFetchIntervalId);
-        gameFetchIntervalId = null;
-        console.log("Matchs récupérés. Arrêt des requêtes périodiques.");
+      // Trier les matchs par date et heure (si disponible)
+      const sortedGames = upcomingGames.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+
+      // Trouver le dernier match terminé (status Final)
+      const finishedGames = data.data.filter((g) => g.status === "Final");
+      const lastGame = finishedGames.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      )[0];
+
+      // Limiter à 4 matchs
+      const gamesToDisplay = sortedGames.slice(0, 4);
+
+      if (gamesToDisplay.length === 0 && !lastGame) {
+        scoresSection.innerHTML =
+          "<p>Aucun match récent ou à venir n’a été trouvé sur cette période.</p>";
+        return;
       }
-      return;
-    }
 
-    scoresSection.innerHTML = "<p>Aucun match prévu aujourd'hui.</p>";
+      if (lastGame) {
+        const div = document.createElement("div");
+        div.classList.add("game-score");
+        div.innerHTML = `
+          <strong>${lastGame.home_team.full_name}</strong> vs <strong>${lastGame.visitor_team.full_name}</strong><br>
+          Score final : ${lastGame.home_team_score} - ${lastGame.visitor_team_score}<br>
+          ${lastGame.status}
+        `;
+        scoresSection.appendChild(div);
+      }
+
+      displayGames(gamesToDisplay);
+    } else {
+      scoresSection.innerHTML = "<p>Aucun match à venir cette semaine.</p>";
+    }
   } catch (error) {
     console.error("Erreur lors de la récupération des matchs :", error);
     if (scoresSection) {
@@ -98,7 +134,6 @@ async function fetchGames() {
 }
 
 function displayGames(games) {
-  scoresSection.innerHTML = "";
   if (games.length === 0) {
     scoresSection.innerHTML = "<p>Aucun match aujourd'hui.</p>";
     return;
@@ -116,6 +151,5 @@ function displayGames(games) {
   });
 }
 
-// Lancer la récupération des scores toutes les 20 secondes jusqu'à obtention
+// Lancer la récupération des scores une seule fois au chargement
 fetchGames();
-gameFetchIntervalId = setInterval(fetchGames, 20000);

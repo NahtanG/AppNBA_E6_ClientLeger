@@ -59,3 +59,48 @@ main {
   background-color: #fafafa;
   max-width: 400px;
 }
+
+/* Main match display area styles */
+#scores {
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+}
+
+.game-score {
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+}
+
+/* Search section separation style */
+.search-section {
+  background-color: #eef2f7;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 6px;
+  max-width: 900px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive layout using flexbox */
+.main-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#scores {
+  flex: 2;
+  min-width: 500px;
+}
+
+aside {
+  flex: 1;
+  min-width: 300px;
+}

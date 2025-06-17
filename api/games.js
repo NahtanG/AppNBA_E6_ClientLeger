@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const { start_date, end_date } = req.query;
-  const url = `https://api.balldontlie.io/v1/games?start_date=${start_date}&end_date=${end_date}`;
+  const url = `https://api.balldontlie.io/v1/games?start_date=${start_date}&end_date=${end_date}&per_page=25`;
 
   try {
     const response = await fetch(url, {
