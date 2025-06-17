@@ -3,6 +3,7 @@ const scoresApiUrl = "/api/games";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 const scoresSection = document.getElementById("scores");
+const searchButton = document.getElementById("search-button");
 
 let lastRequestTime = 0;
 const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
@@ -58,30 +59,43 @@ function displayPlayers(players) {
   });
 }
 
-document.getElementById("search-button").addEventListener("click", () => {
+searchButton.addEventListener("click", () => {
   const query = searchInput.value.trim();
-  if (query) {
-    fetchPlayers(query);
+  if (query) fetchPlayers(query);
+});
+
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    const query = searchInput.value.trim();
+    if (query) fetchPlayers(query);
   }
 });
 
 // --- Partie affichage des scores ---
-async function fetchGames() {
-  const today = new Date().toISOString().split("T")[0];
+async function fetchGames(date = new Date()) {
+  const formatted = date.toISOString().split("T")[0];
   try {
     const response = await fetch(
-      `${scoresApiUrl}?start_date=${today}&end_date=${today}`
+      `${scoresApiUrl}?start_date=${formatted}&end_date=${formatted}`
     );
     const data = await response.json();
     console.log("Matchs du jour :", data);
-    if (!data || !data.data) {
-      scoresSection.innerHTML = "<p>Aucun match prévu aujourd'hui.</p>";
-      return;
+    if (data.data && data.data.length > 0) {
+      displayGames(data.data);
+    } else {
+      const nextDate = new Date(date);
+      nextDate.setDate(date.getDate() + 1);
+      if (nextDate.getDate() - new Date().getDate() <= 10) {
+        fetchGames(nextDate); // Essayer le jour suivant
+      } else {
+        scoresSection.innerHTML = "<p>Aucun match prévu cette semaine.</p>";
+      }
     }
-    displayGames(data.data);
   } catch (error) {
     console.error("Erreur lors de la récupération des matchs :", error);
-    scoresSection.innerHTML = "<p>Erreur de récupération des scores.</p>";
+    if (scoresSection) {
+      scoresSection.innerHTML = "<p>Erreur de récupération des scores.</p>";
+    }
   }
 }
 
@@ -104,6 +118,5 @@ function displayGames(games) {
   });
 }
 
-// Lancer la récupération des scores toutes les 15 secondes
 fetchGames();
 setInterval(fetchGames, 15000);
