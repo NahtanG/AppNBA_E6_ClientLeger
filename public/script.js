@@ -77,6 +77,9 @@ function displayPlayers(players) {
 }
 
 const searchButton = document.getElementById("search-button");
+const teamSearchInput = document.getElementById("team-search-input");
+const teamSearchButton = document.getElementById("team-search-button");
+const teamSearchResults = document.getElementById("team-search-results");
 if (searchButton) {
   searchButton.addEventListener("click", () => {
     const query = searchInput.value.trim();
@@ -180,6 +183,34 @@ function createGameCard(game, isLastGame = false) {
 `;
 }
 
+if (teamSearchButton) {
+  teamSearchButton.addEventListener("click", async () => {
+    const query = teamSearchInput.value.trim().toLowerCase();
+    if (!query) return;
+
+    const teams = await fetchTeams();
+    const filtered = teams.filter((team) =>
+      team.full_name.toLowerCase().includes(query)
+    );
+
+    teamSearchResults.innerHTML = "";
+    if (filtered.length === 0) {
+      teamSearchResults.innerHTML = "<li>Aucune équipe trouvée</li>";
+      return;
+    }
+
+    filtered.forEach((team) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${team.full_name}</strong><br>
+        📍 ${team.city} | 🅰️ ${team.abbreviation} | 🌍 ${team.conference} | 🏅 ${team.division}
+      `;
+      li.classList.add("team-info");
+      teamSearchResults.appendChild(li);
+    });
+  });
+}
+
 fetchGames();
 
 // Détails au clic avec infos équipes
@@ -196,7 +227,18 @@ document.addEventListener("click", async (event) => {
 
     const infoDiv = document.getElementById("game-info");
     if (infoDiv) {
+      if (
+        infoDiv.style.display === "block" &&
+        infoDiv.dataset.gameId === gameCard.dataset.id
+      ) {
+        // Si on clique une seconde fois sur le même match, on masque les infos
+        infoDiv.style.display = "none";
+        infoDiv.dataset.gameId = "";
+        return;
+      }
+
       infoDiv.style.display = "block";
+      infoDiv.dataset.gameId = gameCard.dataset.id;
       infoDiv.innerHTML = `
         <h2>Informations sur les équipes</h2>
         <div class="team-info">

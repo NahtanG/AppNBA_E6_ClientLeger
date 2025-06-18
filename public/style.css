@@ -186,3 +186,35 @@ aside {
   display: block;
   margin-bottom: 5px;
 }
+
+#team-search-section {
+  background-color: #eef7f9;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 6px;
+  max-width: 900px;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.1);
+}
+
+#team-search-section input {
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#team-search-section button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#team-search-section button:hover {
+  background-color: #0056b3;
+}
