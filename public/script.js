@@ -1,5 +1,6 @@
 const apiUrl = "/api/players";
 const scoresApiUrl = "/api/games";
+const teamsApiUrl = "/api/teams";
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 const scoresSection = document.getElementById("scores");
@@ -8,6 +9,21 @@ const lastGameDiv = document.getElementById("last-game");
 
 let lastRequestTime = 0;
 const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
+
+let cachedTeams = null;
+
+async function fetchTeams() {
+  if (cachedTeams) return cachedTeams;
+  try {
+    const response = await fetch(teamsApiUrl);
+    const data = await response.json();
+    cachedTeams = data.data;
+    return cachedTeams;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des équipes :", error);
+    return [];
+  }
+}
 
 async function fetchPlayers(query = "") {
   const now = Date.now();
@@ -60,7 +76,6 @@ function displayPlayers(players) {
   });
 }
 
-// Écoute sur le bouton de recherche
 const searchButton = document.getElementById("search-button");
 if (searchButton) {
   searchButton.addEventListener("click", () => {
@@ -71,7 +86,6 @@ if (searchButton) {
   });
 }
 
-// --- Partie affichage des scores ---
 async function fetchGames() {
   const today = new Date();
   const nextWeek = new Date();
@@ -149,11 +163,16 @@ function createGameCard(game, isLastGame = false) {
 
   const isPlayoff = game.postseason;
 
+  const scoreText = isLive
+    ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>`
+    : isFinal
+      ? `Score final : ${game.home_team_score} - ${game.visitor_team_score}`
+      : "";
+
   return `
-  <div class="${cardClass}${isPlayoff ? " playoff" : ""}" data-id="${game.id}">
+  <div class="${cardClass}${isPlayoff ? " playoff" : ""}" data-id="${game.id}" data-home="${game.home_team.id}" data-visitor="${game.visitor_team.id}">
     <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-    ${isFinal ? `Score final : ${game.home_team_score} - ${game.visitor_team_score}<br>` : ""}
-    ${isLive ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>` : ""}
+    ${scoreText}
     <div class="status">${statusText}</div>
     <div class="date">${dateFormatted}</div>
     ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
@@ -163,11 +182,42 @@ function createGameCard(game, isLastGame = false) {
 
 fetchGames();
 
-document.addEventListener("click", (event) => {
+// Détails au clic avec infos équipes
+
+document.addEventListener("click", async (event) => {
   const gameCard = event.target.closest(".game-score");
   if (gameCard && gameCard.dataset.id) {
-    const gameId = gameCard.dataset.id;
-    console.log("Match cliqué :", gameId);
-    // Tu peux ici ouvrir un modal ou afficher plus de détails si tu veux
+    const homeId = parseInt(gameCard.dataset.home);
+    const visitorId = parseInt(gameCard.dataset.visitor);
+    const teams = await fetchTeams();
+
+    const homeTeam = teams.find((t) => t.id === homeId);
+    const visitorTeam = teams.find((t) => t.id === visitorId);
+
+    const infoDiv = document.getElementById("game-info");
+    if (infoDiv) {
+      infoDiv.style.display = "block";
+      infoDiv.innerHTML = `
+        <h2>Informations sur les équipes</h2>
+        <div class="team-info">
+          <h3>${homeTeam.full_name}</h3>
+          <p>📍 ${homeTeam.city}</p>
+          <p>🅰️ Abréviation : ${homeTeam.abbreviation}</p>
+          <p>🌍 Conférence : ${homeTeam.conference}</p>
+          <p>🏅 Division : ${homeTeam.division}</p>
+        </div>
+        <div class="team-info">
+          <h3>${visitorTeam.full_name}</h3>
+          <p>📍 ${visitorTeam.city}</p>
+          <p>🅰️ Abréviation : ${visitorTeam.abbreviation}</p>
+          <p>🌍 Conférence : ${visitorTeam.conference}</p>
+          <p>🏅 Division : ${visitorTeam.division}</p>
+        </div>
+      `;
+      window.scrollTo({
+        top: infoDiv.offsetTop - 20,
+        behavior: "smooth",
+      });
+    }
   }
 });
