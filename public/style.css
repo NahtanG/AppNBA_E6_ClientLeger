@@ -357,43 +357,83 @@ aside {
   width: 100%;
 }
 
-/* Cartes de match plus étroites et centrées sur mobile */
+/* Centrage des sections de recherche */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Centrage des inputs et boutons dans les recherches */
+#search-input,
+#team-search-input,
+#search-button,
+#team-search-button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Cartes de match : largeur adaptée et centrée sur mobile */
+.game-score {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 12px auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Section des matchs : centrée et largeur adaptée */
+#scores,
+#upcoming-games,
+#last-game {
+  width: 100%;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Empêche tout débordement horizontal */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Responsive : tout en colonne sur mobile */
 @media (max-width: 600px) {
-  html,
-  body {
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     width: 100vw;
-    overflow-x: hidden;
+    padding: 0;
   }
 
   #scores,
   #upcoming-games,
   #last-game {
     width: 100vw;
-    max-width: 100vw;
-    margin: 0;
-    padding: 0 0.5rem;
-    box-sizing: border-box;
+    max-width: 98vw;
+    margin: 0 auto 12px auto;
+    padding: 0;
   }
 
   .game-score {
-    width: 94vw;
+    width: 96vw;
     max-width: 320px;
     margin: 0 auto 12px auto;
-    box-sizing: border-box;
     font-size: 0.97rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-sizing: border-box;
   }
-}
 
-/* Corrige aussi la largeur des cards en général */
-.game-score {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto 12px auto;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  .search-section {
+    width: 100vw;
+    max-width: 98vw;
+    margin: 0 auto 20px auto;
+    box-sizing: border-box;
+  }
 }
