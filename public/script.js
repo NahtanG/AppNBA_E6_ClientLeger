@@ -150,17 +150,24 @@ function createGameCard(game, isLastGame = false) {
   const isPlayoff = game.postseason;
 
   return `
-    <div class="${cardClass}${isPlayoff ? " playoff" : ""}">
-      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-      ${isFinal ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
-      ${statusText}<br>
-      <div class="date">${dateFormatted}</div>
-      <div class="details">
-        ${isPlayoff ? "Match de playoffs" : ""}
-        ${isLive ? `<br>Période actuelle : ${game.period}` : ""}
-      </div>
-    </div>
-  `;
+  <div class="${cardClass}${isPlayoff ? " playoff" : ""}" data-id="${game.id}">
+    <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
+    ${isFinal ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
+    <div class="status">${statusText}</div>
+    <div class="date">${dateFormatted}</div>
+    ${isLive ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>` : ""}
+    ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
+  </div>
+`;
 }
 
 fetchGames();
+
+document.addEventListener("click", (event) => {
+  const gameCard = event.target.closest(".game-score");
+  if (gameCard && gameCard.dataset.id) {
+    const gameId = gameCard.dataset.id;
+    console.log("Match cliqué :", gameId);
+    // Tu peux ici ouvrir un modal ou afficher plus de détails si tu veux
+  }
+});
