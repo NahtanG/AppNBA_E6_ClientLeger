@@ -28,7 +28,7 @@
 
       <!-- Barre latérale : recherche -->
       <aside>
-        <section id="search-section">
+        <section id="search-section" class="search-section">
           <input
             type="text"
             id="search-input"
@@ -45,7 +45,7 @@
           <p id="player-position"></p>
         </section>
 
-        <section id="team-search-section">
+        <section id="team-search-section" class="search-section">
           <h2>Recherche d'équipe</h2>
           <input
             type="text"
@@ -56,7 +56,11 @@
           <ul id="team-search-results"></ul>
         </section>
 
-        <section id="team-result-details" style="display: none">
+        <section
+          id="team-result-details"
+          class="search-section"
+          style="display: none"
+        >
           <h2>Détails de l'équipe</h2>
           <p id="team-name"></p>
           <p id="team-city"></p>
@@ -72,6 +76,7 @@
         <p id="game-date"></p>
         <p id="game-type"></p>
       </section>
+
       <section id="team-details" style="display: none; margin-top: 20px">
         <h2>Détails des équipes</h2>
         <div id="home-team-info">

@@ -1,14 +1,20 @@
 const apiUrl = "/api/players";
 const scoresApiUrl = "/api/games";
 const teamsApiUrl = "/api/teams";
+
 const playerList = document.getElementById("player-list");
 const searchInput = document.getElementById("search-input");
 const scoresSection = document.getElementById("scores");
 const upcomingGamesDiv = document.getElementById("upcoming-games");
 const lastGameDiv = document.getElementById("last-game");
 
+const searchButton = document.getElementById("search-button");
+const teamSearchInput = document.getElementById("team-search-input");
+const teamSearchButton = document.getElementById("team-search-button");
+const teamSearchResults = document.getElementById("team-search-results");
+
 let lastRequestTime = 0;
-const REQUEST_INTERVAL = 12000; // 12 secondes entre chaque requête pour les joueurs
+const REQUEST_INTERVAL = 12000;
 
 let cachedTeams = null;
 
@@ -38,7 +44,6 @@ async function fetchPlayers(query = "") {
       `${apiUrl}?search=${encodeURIComponent(query)}`
     );
     const data = await response.json();
-    console.log("Réponse API :", data);
 
     if (!data || !data.data) {
       playerList.innerHTML = "<li>Erreur : format de données inattendu</li>";
@@ -64,28 +69,55 @@ function displayPlayers(players) {
     const li = document.createElement("li");
     li.textContent = `${player.first_name} ${player.last_name} - ${player.team.full_name}`;
     li.addEventListener("click", () => {
-      document.getElementById("player-details").style.display = "block";
-      document.getElementById("player-name").textContent =
-        `${player.first_name} ${player.last_name}`;
-      document.getElementById("player-team").textContent =
-        `Équipe : ${player.team.full_name}`;
-      document.getElementById("player-position").textContent =
-        `Poste : ${player.position || "Non spécifié"}`;
+      const details = document.getElementById("player-details");
+      details.style.display = "block";
+      details.innerHTML = `
+        <h2>Détails du joueur</h2>
+        <div class="team-info">
+          <strong>Nom :</strong> ${player.first_name} ${player.last_name}<br>
+          <strong>Équipe :</strong> ${player.team.full_name}<br>
+          <strong>Poste :</strong> ${player.position || "Non spécifié"}
+        </div>
+      `;
     });
     playerList.appendChild(li);
   });
 }
 
-const searchButton = document.getElementById("search-button");
-const teamSearchInput = document.getElementById("team-search-input");
-const teamSearchButton = document.getElementById("team-search-button");
-const teamSearchResults = document.getElementById("team-search-results");
 if (searchButton) {
   searchButton.addEventListener("click", () => {
     const query = searchInput.value.trim();
     if (query !== "") {
       fetchPlayers(query);
     }
+  });
+}
+
+if (teamSearchButton) {
+  teamSearchButton.addEventListener("click", async () => {
+    const query = teamSearchInput.value.trim().toLowerCase();
+    if (!query) return;
+
+    const teams = await fetchTeams();
+    const filtered = teams.filter((team) =>
+      team.full_name.toLowerCase().includes(query)
+    );
+
+    teamSearchResults.innerHTML = "";
+    if (filtered.length === 0) {
+      teamSearchResults.innerHTML = "<li>Aucune équipe trouvée</li>";
+      return;
+    }
+
+    filtered.forEach((team) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${team.full_name}</strong><br>
+        📍 ${team.city} | 🅰️ ${team.abbreviation} | 🌍 ${team.conference} | 🏅 ${team.division}
+      `;
+      li.classList.add("team-info");
+      teamSearchResults.appendChild(li);
+    });
   });
 }
 
@@ -97,7 +129,6 @@ async function fetchGames() {
   const lastWeek = new Date();
   lastWeek.setDate(today.getDate() - 6);
   const lastDate = lastWeek.toISOString().split("T")[0];
-
   const startDate = today.toISOString().split("T")[0];
   const endDate = nextWeek.toISOString().split("T")[0];
 
@@ -129,9 +160,7 @@ async function fetchGames() {
       }
 
       if (upcomingGames.length > 0) {
-        upcomingGamesDiv.innerHTML = upcomingGames
-          .map((game) => createGameCard(game))
-          .join("");
+        upcomingGamesDiv.innerHTML = upcomingGames.map(createGameCard).join("");
       } else {
         upcomingGamesDiv.innerHTML = "<p>Aucun match à venir.</p>";
       }
@@ -156,6 +185,9 @@ function createGameCard(game, isLastGame = false) {
 
   const isLive = game.status.toLowerCase().includes("in progress");
   const isFinal = game.status === "Final";
+  const isUpcoming = !isFinal && !isLive;
+  const isPlayoff = game.postseason;
+
   const cardClass = isLive
     ? "game-score live"
     : isFinal
@@ -164,8 +196,6 @@ function createGameCard(game, isLastGame = false) {
 
   const statusText = isFinal ? "Terminé" : isLive ? "En cours" : "À venir";
 
-  const isPlayoff = game.postseason;
-
   const scoreText = isLive
     ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>`
     : isFinal
@@ -173,51 +203,33 @@ function createGameCard(game, isLastGame = false) {
       : "";
 
   return `
-  <div class="${cardClass}${isPlayoff ? " playoff" : ""}" data-id="${game.id}" data-home="${game.home_team.id}" data-visitor="${game.visitor_team.id}">
-    <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-    ${scoreText}
-    <div class="status">${statusText}</div>
-    <div class="date">${dateFormatted}</div>
-    ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
-  </div>
-`;
+    <div class="${cardClass}${isPlayoff ? " playoff" : ""}"
+         data-id="${game.id}"
+         data-home="${game.home_team.id}"
+         data-visitor="${game.visitor_team.id}">
+      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
+      ${scoreText}
+      <div class="status">${statusText}</div>
+      <div class="date">${dateFormatted}</div>
+      ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
+    </div>
+  `;
 }
-
-if (teamSearchButton) {
-  teamSearchButton.addEventListener("click", async () => {
-    const query = teamSearchInput.value.trim().toLowerCase();
-    if (!query) return;
-
-    const teams = await fetchTeams();
-    const filtered = teams.filter((team) =>
-      team.full_name.toLowerCase().includes(query)
-    );
-
-    teamSearchResults.innerHTML = "";
-    if (filtered.length === 0) {
-      teamSearchResults.innerHTML = "<li>Aucune équipe trouvée</li>";
-      return;
-    }
-
-    filtered.forEach((team) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${team.full_name}</strong><br>
-        📍 ${team.city} | 🅰️ ${team.abbreviation} | 🌍 ${team.conference} | 🏅 ${team.division}
-      `;
-      li.classList.add("team-info");
-      teamSearchResults.appendChild(li);
-    });
-  });
-}
-
-fetchGames();
-
-// Détails au clic avec infos équipes
 
 document.addEventListener("click", async (event) => {
   const gameCard = event.target.closest(".game-score");
   if (gameCard && gameCard.dataset.id) {
+    const infoDiv = document.getElementById("game-info");
+
+    if (
+      infoDiv.style.display === "block" &&
+      infoDiv.dataset.gameId === gameCard.dataset.id
+    ) {
+      infoDiv.style.display = "none";
+      infoDiv.dataset.gameId = "";
+      return;
+    }
+
     const homeId = parseInt(gameCard.dataset.home);
     const visitorId = parseInt(gameCard.dataset.visitor);
     const teams = await fetchTeams();
@@ -225,41 +237,27 @@ document.addEventListener("click", async (event) => {
     const homeTeam = teams.find((t) => t.id === homeId);
     const visitorTeam = teams.find((t) => t.id === visitorId);
 
-    const infoDiv = document.getElementById("game-info");
-    if (infoDiv) {
-      if (
-        infoDiv.style.display === "block" &&
-        infoDiv.dataset.gameId === gameCard.dataset.id
-      ) {
-        // Si on clique une seconde fois sur le même match, on masque les infos
-        infoDiv.style.display = "none";
-        infoDiv.dataset.gameId = "";
-        return;
-      }
-
-      infoDiv.style.display = "block";
-      infoDiv.dataset.gameId = gameCard.dataset.id;
-      infoDiv.innerHTML = `
-        <h2>Informations sur les équipes</h2>
-        <div class="team-info">
-          <h3>${homeTeam.full_name}</h3>
-          <p>📍 ${homeTeam.city}</p>
-          <p>🅰️ Abréviation : ${homeTeam.abbreviation}</p>
-          <p>🌍 Conférence : ${homeTeam.conference}</p>
-          <p>🏅 Division : ${homeTeam.division}</p>
-        </div>
-        <div class="team-info">
-          <h3>${visitorTeam.full_name}</h3>
-          <p>📍 ${visitorTeam.city}</p>
-          <p>🅰️ Abréviation : ${visitorTeam.abbreviation}</p>
-          <p>🌍 Conférence : ${visitorTeam.conference}</p>
-          <p>🏅 Division : ${visitorTeam.division}</p>
-        </div>
-      `;
-      window.scrollTo({
-        top: infoDiv.offsetTop - 20,
-        behavior: "smooth",
-      });
-    }
+    infoDiv.style.display = "block";
+    infoDiv.dataset.gameId = gameCard.dataset.id;
+    infoDiv.innerHTML = `
+      <h2>Informations sur les équipes</h2>
+      <div class="team-info">
+        <h3>${homeTeam.full_name}</h3>
+        <p>📍 ${homeTeam.city}</p>
+        <p>🅰️ Abréviation : ${homeTeam.abbreviation}</p>
+        <p>🌍 Conférence : ${homeTeam.conference}</p>
+        <p>🏅 Division : ${homeTeam.division}</p>
+      </div>
+      <div class="team-info">
+        <h3>${visitorTeam.full_name}</h3>
+        <p>📍 ${visitorTeam.city}</p>
+        <p>🅰️ Abréviation : ${visitorTeam.abbreviation}</p>
+        <p>🌍 Conférence : ${visitorTeam.conference}</p>
+        <p>🏅 Division : ${visitorTeam.division}</p>
+      </div>
+    `;
+    window.scrollTo({ top: infoDiv.offsetTop - 20, behavior: "smooth" });
   }
 });
+
+fetchGames();

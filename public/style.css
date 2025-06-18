@@ -23,7 +23,9 @@ main {
   margin: 0 auto;
 }
 
-#search-input {
+/* Barre et bouton de recherche unifiés */
+#search-input,
+#team-search-input {
   margin: 20px;
   padding: 10px;
   width: 300px;
@@ -33,7 +35,8 @@ main {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#search-button {
+#search-button,
+#team-search-button {
   padding: 10px 15px;
   margin-left: 10px;
   font-size: 16px;
@@ -44,10 +47,12 @@ main {
   cursor: pointer;
 }
 
-#search-button:hover {
+#search-button:hover,
+#team-search-button:hover {
   background-color: #0056b3;
 }
 
+/* Liste des joueurs */
 #player-list {
   list-style: none;
   padding: 0;
@@ -69,13 +74,38 @@ main {
   background-color: #e0e0e0;
 }
 
+/* Liste des équipes */
+#team-search-results {
+  list-style: none;
+  padding: 0;
+  margin: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#team-search-results li {
+  list-style-type: none;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #f2f2f2;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#team-search-results li:hover {
+  background-color: #e0e0e0;
+}
+
+/* Détails du joueur */
 #player-details {
   margin: 20px;
   padding: 20px;
-  border: 1px solid #ccc;
+  background-color: #f1f9ff;
+  border: 1px solid #cce5ff;
   border-radius: 6px;
-  background-color: #fafafa;
   max-width: 400px;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.1);
 }
 
 /* Main match display area styles */
@@ -122,33 +152,6 @@ main {
   background-color: #f4fff3;
 }
 
-/* Search section separation style */
-.search-section {
-  background-color: #eef2f7;
-  padding: 20px;
-  margin: 20px auto;
-  border-radius: 6px;
-  max-width: 900px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-}
-
-/* Responsive layout using flexbox */
-.main-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-#scores {
-  flex: 2;
-  min-width: 500px;
-}
-
-aside {
-  flex: 1;
-  min-width: 300px;
-}
-
 .game-score.playoff {
   border-left-color: #ffa000;
   background-color: #fff8e1;
@@ -177,6 +180,43 @@ aside {
   border-radius: 12px;
 }
 
+/* Sections */
+.search-section {
+  background-color: #eef2f7;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 6px;
+  max-width: 900px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+#team-search-section {
+  background-color: #eef7f9;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 6px;
+  max-width: 900px;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.1);
+}
+
+/* Responsive layout using flexbox */
+.main-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+#scores {
+  flex: 2;
+  min-width: 500px;
+}
+
+aside {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Détails des équipes (au clic sur une carte) */
 #team-details {
   margin: 20px 0;
   padding: 20px;
@@ -203,59 +243,4 @@ aside {
 .team-info strong {
   display: block;
   margin-bottom: 5px;
-}
-
-#team-search-section {
-  background-color: #eef7f9;
-  padding: 20px;
-  margin: 20px auto;
-  border-radius: 6px;
-  max-width: 900px;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.1);
-}
-
-#team-search-section input {
-  margin: 20px;
-  padding: 10px;
-  width: 300px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-#team-search-section button {
-  padding: 10px 15px;
-  margin-left: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#team-list {
-  list-style: none;
-  padding: 0;
-  margin: 20px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-#team-list li {
-  padding: 10px;
-  margin-bottom: 5px;
-  background-color: #f2f2f2;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-#team-list li:hover {
-  background-color: #e0e0e0;
-}
-
-#team-search-section button:hover {
-  background-color: #0056b3;
 }
