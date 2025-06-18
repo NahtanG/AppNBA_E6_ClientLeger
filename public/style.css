@@ -287,7 +287,7 @@ aside {
   font-weight: bold;
   letter-spacing: 1px;
   color: #222;
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
 }
 
 /* Footer styles */
@@ -338,14 +338,93 @@ aside {
   font-weight: bold;
   letter-spacing: 1px;
   color: #222;
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
 }
 
 /* Font pour les titres des sections de recherche */
 .search-title {
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-family: "Inter", Arial, Helvetica, sans-serif;
   font-weight: 600;
   font-size: 1.2rem;
   margin-bottom: 10px;
   color: #222;
+}
+
+/* Responsive: tout en colonne sur mobile */
+@media (max-width: 900px) {
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 0;
+  }
+
+  #scores {
+    order: 1;
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+
+  #game-info {
+    order: 2;
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+
+  aside {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-section,
+  #player-details,
+  #team-result-details {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 20px 0;
+    box-sizing: border-box;
+  }
+
+  #team-details,
+  #game-details {
+    width: 100%;
+    margin: 0 0 20px 0;
+  }
+
+  /* Pour éviter les débordements horizontaux */
+  body,
+  html {
+    overflow-x: hidden;
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 600px) {
+  .nba-logo {
+    height: 70px;
+  }
+  .app-title {
+    font-size: 1.1rem;
+  }
+  .footer-content {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .search-title {
+    font-size: 1rem;
+  }
+  #search-input,
+  #team-search-input {
+    max-width: 100%;
+    width: 98%;
+    font-size: 15px;
+  }
+  #search-button,
+  #team-search-button {
+    font-size: 15px;
+    padding: 8px 10px;
+  }
 }
