@@ -434,10 +434,10 @@ body {
   #team-details,
   #game-details,
   .game-score {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin: 0 0 14px 0 !important;
-    padding: 0 2vw !important;
+    width: 94vw !important;
+    max-width: 94vw !important;
+    margin: 0 auto 14px auto !important;
+    padding: 0 3vw !important;
     box-sizing: border-box !important;
   }
 
@@ -445,7 +445,7 @@ body {
   #scores > h2,
   .search-title {
     text-align: center !important;
-    width: 100vw !important;
+    width: 100%;
   }
 
   /* Centrage des sections de recherche */
@@ -453,7 +453,7 @@ body {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    width: 100vw !important;
+    width: 94vw !important;
     box-sizing: border-box !important;
   }
 
@@ -462,8 +462,8 @@ body {
   #team-search-input,
   #search-button,
   #team-search-button {
-    width: 96vw !important;
-    max-width: 420px !important;
+    width: 90vw !important;
+    max-width: 400px !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     margin-left: auto !important;
@@ -474,8 +474,8 @@ body {
   /* Listes de résultats */
   #player-list,
   #team-search-results {
-    width: 100vw !important;
-    max-width: 100vw !important;
+    width: 94vw !important;
+    max-width: 94vw !important;
     box-sizing: border-box !important;
     padding-left: 0 !important;
   }
