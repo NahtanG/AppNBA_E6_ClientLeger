@@ -129,7 +129,7 @@ async function fetchGames() {
 }
 
 function createGameCard(game, isLastGame = false) {
-  const date = new Date(game.date).toLocaleDateString("fr-FR", {
+  const dateFormatted = new Date(game.date).toLocaleDateString("fr-FR", {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -144,15 +144,17 @@ function createGameCard(game, isLastGame = false) {
     : isFinal
       ? "game-score final"
       : "game-score";
-  const statusText = isFinal ? "Terminé" : game.status;
+
+  const statusText = isFinal ? "Terminé" : isLive ? "En cours" : "À venir";
+
   const isPlayoff = game.postseason;
 
   return `
     <div class="${cardClass}${isPlayoff ? " playoff" : ""}">
       <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-      ${isLastGame ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
-      ${statusText === "Final" ? "Terminé" : "À venir"}<br>
-      <div class="date">${date}</div>
+      ${isFinal ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
+      ${statusText}<br>
+      <div class="date">${dateFormatted}</div>
       <div class="details">
         ${isPlayoff ? "Match de playoffs" : ""}
         ${isLive ? `<br>Période actuelle : ${game.period}` : ""}
