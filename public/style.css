@@ -396,6 +396,23 @@ aside {
   box-sizing: border-box;
 }
 
+/* Largeur normale hors mobile */
+#scores,
+#upcoming-games,
+#last-game,
+.search-section,
+#player-details,
+#team-result-details,
+#team-details,
+#game-details,
+.game-score {
+  max-width: 420px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
 /* Empêche tout débordement horizontal */
 html,
 body {
@@ -403,8 +420,15 @@ body {
   overflow-x: hidden;
 }
 
-/* Responsive : tout en colonne sur mobile */
+/* Responsive : tout en colonne sur mobile, tout prend 100% de la largeur visible */
 @media (max-width: 600px) {
+  html,
+  body {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .main-container {
     display: flex;
     flex-direction: column;
@@ -415,25 +439,60 @@ body {
 
   #scores,
   #upcoming-games,
-  #last-game {
+  #last-game,
+  .search-section,
+  #player-details,
+  #team-result-details,
+  #team-details,
+  #game-details {
     width: 100vw;
-    max-width: 98vw;
-    margin: 0 auto 12px auto;
-    padding: 0;
+    max-width: 100vw;
+    margin: 0 0 16px 0;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
   }
 
   .game-score {
-    width: 96vw;
-    max-width: 320px;
-    margin: 0 auto 12px auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 12px 0;
     font-size: 0.97rem;
     box-sizing: border-box;
   }
 
+  /* Centrage des titres */
+  #scores > h2,
+  .search-title {
+    text-align: center;
+    width: 100%;
+  }
+
+  /* Centrage des sections de recherche */
   .search-section {
-    width: 100vw;
-    max-width: 98vw;
-    margin: 0 auto 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Centrage des inputs et boutons dans les recherches */
+  #search-input,
+  #team-search-input,
+  #search-button,
+  #team-search-button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 96vw;
+    max-width: 400px;
     box-sizing: border-box;
+  }
+
+  /* Ajuste la taille des listes pour éviter le débordement */
+  #player-list,
+  #team-search-results {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    padding-left: 0;
   }
 }
