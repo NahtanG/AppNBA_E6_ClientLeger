@@ -350,58 +350,14 @@ aside {
   color: #222;
 }
 
-/* Responsive: tout en colonne sur mobile */
-@media (max-width: 900px) {
-  .main-container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    padding: 0;
-  }
-
-  #scores {
-    order: 1;
-    width: 100%;
-    margin: 0 0 20px 0;
-  }
-
-  #game-info {
-    order: 2;
-    width: 100%;
-    margin: 0 0 20px 0;
-  }
-
-  aside {
-    order: 3;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  .search-section,
-  #player-details,
-  #team-result-details {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 0 20px 0;
-    box-sizing: border-box;
-  }
-
-  #team-details,
-  #game-details {
-    width: 100%;
-    margin: 0 0 20px 0;
-  }
-
-  /* Pour éviter les débordements horizontaux */
-  body,
-  html {
-    overflow-x: hidden;
-  }
+/* Centrage des titres */
+#scores > h2,
+.search-title {
+  text-align: center;
+  width: 100%;
 }
 
-/* Pour les très petits écrans */
+/* Cartes de match plus étroites et centrées sur mobile */
 @media (max-width: 600px) {
   html,
   body {
@@ -420,11 +376,14 @@ aside {
   }
 
   .game-score {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 0 12px 0;
+    width: 94vw;
+    max-width: 320px;
+    margin: 0 auto 12px auto;
     box-sizing: border-box;
     font-size: 0.97rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -434,4 +393,7 @@ aside {
   max-width: 420px;
   margin: 0 auto 12px auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
