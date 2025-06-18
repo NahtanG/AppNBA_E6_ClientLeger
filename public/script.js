@@ -152,10 +152,10 @@ function createGameCard(game, isLastGame = false) {
   return `
   <div class="${cardClass}${isPlayoff ? " playoff" : ""}" data-id="${game.id}">
     <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-    ${isFinal ? `Score final` : `Score`} : ${game.home_team_score} - ${game.visitor_team_score}<br>
+    ${isFinal ? `Score final : ${game.home_team_score} - ${game.visitor_team_score}<br>` : ""}
+    ${isLive ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>` : ""}
     <div class="status">${statusText}</div>
     <div class="date">${dateFormatted}</div>
-    ${isLive ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>` : ""}
     ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
   </div>
 `;
