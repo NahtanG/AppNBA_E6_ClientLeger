@@ -472,39 +472,41 @@ body {
   }
 }
 
-/* Ajoute un petit espace autour de l'élément orangé (playoff) */
-.game-score.playoff {
-  margin: 8px 0;
-  box-shadow: 0 0 0 2px #ffb30033;
-  background: #fff7df;
-  border-left: 6px solid #ffb300;
-  border-radius: 8px;
-  /* PAS de !important ici */
-}
-
-/* Sur mobile, espace autour de la card playoff, pas de bordure à gauche */
+/* --- Corrige la marge à gauche sur toutes les cards de match sur mobile --- */
 @media (max-width: 700px) {
-  .game-score.playoff {
-    border-left: none;
-    box-shadow: 0 0 0 2px #ffb30033;
-    background: #fff7df;
-    padding: 8px 6px;
+  .game-score {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 8px 0 12px 0 !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  /* Pour éviter tout décalage, retire aussi le padding/marge du parent */
+  #upcoming-games,
+  #last-game {
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }
 
-/* Centrage des titres "Prochains matchs" et "Dernier match terminé" sur mobile */
-#scores > h2 {
-  margin-left: 0;
-  margin-right: 0;
-  width: 100%;
-  text-align: left;
+/* --- Bordure orange uniquement pour les playoffs, sans marge à gauche sur mobile --- */
+.game-score.playoff {
+  border-left: 6px solid #ffb300 !important;
+  background: #fff7df !important;
+  box-shadow: 0 0 0 2px #ffb30033;
+  border-radius: 8px;
 }
 
 @media (max-width: 700px) {
-  #scores > h2 {
-    text-align: center;
-    margin-left: 0;
-    margin-right: 0;
+  .game-score.playoff {
+    border-left: 6px solid #ffb300 !important;
+    margin: 8px 0 12px 0 !important;
+    padding: 0 !important;
+    background: #fff7df !important;
+    box-shadow: 0 0 0 2px #ffb30033;
+    border-radius: 8px !important;
   }
 }
 
