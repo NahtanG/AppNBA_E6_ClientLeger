@@ -414,7 +414,8 @@ aside {
 }
 
 /* Empêche tout débordement horizontal */
-html, body {
+html,
+body {
   width: 100vw !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
@@ -422,38 +423,52 @@ html, body {
   margin: 0 !important;
 }
 
-/* --- CORRECTION DU DÉBORDEMENT DES MATCHS SUR MOBILE --- */
+/* --- CORRECTION DU DÉBORDEMENT ET DE LA MARGE ORANGE SUR MOBILE --- */
 @media (max-width: 700px) {
+  /* Les sections principales gardent une petite marge sur les côtés */
   #scores,
   #upcoming-games,
   #last-game {
-    width: 96vw !important;
-    max-width: 96vw !important;
-    margin: 0 auto 14px auto !important;
-    padding: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 2vw !important;
     box-sizing: border-box !important;
   }
 
+  /* Les cards de match prennent toute la largeur disponible sans marge à gauche */
   .game-score {
     width: 100% !important;
     max-width: 100% !important;
-    margin: 0 auto 12px auto !important;
+    margin: 0 0 12px 0 !important;
     box-sizing: border-box !important;
-    overflow-x: auto !important;
-    word-break: break-word !important;
+    border-left: none !important; /* enlève la bordure orange à gauche si utilisée */
+    border-radius: 8px !important;
+    overflow-x: hidden !important;
   }
 
-  /* Pour la division orangée (ex: .playoff-tag ou .period) */
+  /* Si tu utilises un fond ou une bordure orange sur .game-score, mets-le sur toute la card */
+  .game-score.playoff {
+    border-left: none !important;
+    background: #fff7df !important;
+    /* Si tu veux garder une indication orange, utilise une fine bordure en bas par exemple : */
+    border-bottom: 3px solid #ffb300 !important;
+  }
+
+  /* Les éléments internes ne débordent pas */
   .game-score .playoff-tag,
-  .game-score .period {
-    box-sizing: border-box !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    word-break: break-word !important;
-    text-align: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
+  .game-score .period,
+  .game-score .details,
+  .game-score .date,
+  .game-score .status {
+    max-width: 100%;
+    overflow-x: hidden;
+    word-break: break-word;
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+    box-sizing: border-box;
   }
 }
 
