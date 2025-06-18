@@ -43,12 +43,21 @@ main {
   padding: 10px 15px;
   margin-left: 6px;
   font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: #f5f5f5; /* gris très clair, discret */
+  color: #444;
+  border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
   display: inline-block;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+#search-button:hover,
+#team-search-button:hover {
+  background-color: #e0e0e0;
+  color: #111;
 }
 
 /* Liste des joueurs */
@@ -248,8 +257,8 @@ aside {
 .topbar {
   display: flex;
   align-items: center;
-  background: #173366; /* plus clair que #0b2240 */
-  color: #fff;
+  background: #e0e0e0; /* gris moyen, plus marqué mais neutre */
+  color: #222;
   padding: 12px 24px;
   margin-bottom: 30px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
@@ -263,7 +272,7 @@ aside {
 }
 
 .nba-logo {
-  height: 80px; /* encore plus grand */
+  height: 110px;
   width: auto;
   margin-right: 10px;
   transition: transform 0.15s;
@@ -277,12 +286,13 @@ aside {
   font-size: 1.7rem;
   font-weight: bold;
   letter-spacing: 1px;
+  color: #222;
 }
 
 /* Footer styles */
 .footer {
-  background: #173366; /* plus clair que #0b2240 */
-  color: #fff;
+  background: #e0e0e0; /* même gris moyen que le header */
+  color: #222;
   padding: 18px 0;
   text-align: center;
   margin-top: 40px;
