@@ -26,30 +26,29 @@ main {
 /* Barre et bouton de recherche unifiés */
 #search-input,
 #team-search-input {
-  margin: 20px;
+  margin: 12px 0;
   padding: 10px;
-  width: 300px;
+  width: 90%;
+  max-width: 220px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 #search-button,
 #team-search-button {
   padding: 10px 15px;
-  margin-left: 10px;
+  margin-left: 6px;
   font-size: 16px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-#search-button:hover,
-#team-search-button:hover {
-  background-color: #0056b3;
+  display: inline-block;
 }
 
 /* Liste des joueurs */
@@ -243,4 +242,81 @@ aside {
 .team-info strong {
   display: block;
   margin-bottom: 5px;
+}
+
+/* Top bar header */
+.topbar {
+  display: flex;
+  align-items: center;
+  background: #0b2240;
+  color: #fff;
+  padding: 12px 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.nba-logo-link {
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+  text-decoration: none;
+}
+
+.nba-logo {
+  height: 38px;
+  width: auto;
+  margin-right: 10px;
+  transition: transform 0.15s;
+}
+
+.nba-logo-link:hover .nba-logo {
+  transform: scale(1.07) rotate(-4deg);
+}
+
+.app-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Footer styles */
+.footer {
+  background: #0b2240;
+  color: #fff;
+  padding: 18px 0;
+  text-align: center;
+  margin-top: 40px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.portfolio-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  text-decoration: none;
+}
+
+.portfolio-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 3px;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-link:hover .portfolio-logo {
+  transform: scale(1.08) rotate(-6deg);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.18);
 }
