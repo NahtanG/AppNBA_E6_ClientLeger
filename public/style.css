@@ -414,8 +414,7 @@ aside {
 }
 
 /* Empêche tout débordement horizontal */
-html,
-body {
+html, body {
   width: 100vw !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
@@ -423,60 +422,45 @@ body {
   margin: 0 !important;
 }
 
-/* Responsive : tout prend 100vw sur mobile, padding réduit, police adaptée */
+/* --- CORRECTION DU DÉBORDEMENT DES MATCHS SUR MOBILE --- */
 @media (max-width: 700px) {
   #scores,
   #upcoming-games,
-  #last-game,
-  .search-section,
-  #player-details,
-  #team-result-details,
-  #team-details,
-  #game-details,
-  .game-score {
-    width: 94vw !important;
-    max-width: 94vw !important;
+  #last-game {
+    width: 96vw !important;
+    max-width: 96vw !important;
     margin: 0 auto 14px auto !important;
-    padding: 0 3vw !important;
+    padding: 0 !important;
     box-sizing: border-box !important;
   }
 
-  /* Centrage des titres */
-  #scores > h2,
-  .search-title {
+  .game-score {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 12px auto !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    word-break: break-word !important;
+  }
+
+  /* Pour la division orangée (ex: .playoff-tag ou .period) */
+  .game-score .playoff-tag,
+  .game-score .period {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    word-break: break-word !important;
     text-align: center !important;
-    width: 100%;
-  }
-
-  /* Centrage des sections de recherche */
-  .search-section {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 94vw !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Inputs et boutons prennent toute la largeur visible */
-  #search-input,
-  #team-search-input,
-  #search-button,
-  #team-search-button {
-    width: 90vw !important;
-    max-width: 400px !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
     margin-left: auto !important;
     margin-right: auto !important;
     display: block !important;
   }
+}
 
-  /* Listes de résultats */
-  #player-list,
-  #team-search-results {
-    width: 94vw !important;
-    max-width: 94vw !important;
-    box-sizing: border-box !important;
-    padding-left: 0 !important;
-  }
+/* --- CENTRAGE DES INFOS ÉQUIPE AU CLIC SUR UN MATCH --- */
+#game-info .team-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
