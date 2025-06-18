@@ -403,45 +403,35 @@ aside {
 
 /* Pour les très petits écrans */
 @media (max-width: 600px) {
-  .nba-logo {
-    height: 70px;
-  }
-  .app-title {
-    font-size: 1.1rem;
-  }
-  .footer-content {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .search-title {
-    font-size: 1rem;
-  }
-  #search-input,
-  #team-search-input {
-    max-width: 100%;
-    width: 98%;
-    font-size: 15px;
-  }
-  #search-button,
-  #team-search-button {
-    font-size: 15px;
-    padding: 8px 10px;
+  html,
+  body {
+    width: 100vw;
+    overflow-x: hidden;
   }
 
-  /* Réduction de la largeur des cartes de match */
   #scores,
   #upcoming-games,
   #last-game {
-    width: 100%;
-    max-width: 370px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100vw;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
   }
+
   .game-score {
     width: 100%;
-    max-width: 350px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 100%;
+    margin: 0 0 12px 0;
+    box-sizing: border-box;
     font-size: 0.97rem;
   }
+}
+
+/* Corrige aussi la largeur des cards en général */
+.game-score {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 12px auto;
+  box-sizing: border-box;
 }
