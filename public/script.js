@@ -116,6 +116,20 @@ if (teamSearchButton) {
         📍 ${team.city} | 🅰️ ${team.abbreviation} | 🌍 ${team.conference} | 🏅 ${team.division}
       `;
       li.classList.add("team-info");
+      li.addEventListener("click", () => {
+        teamSearchResults.innerHTML = `
+          <div id="team-result-details">
+            <h2>Détails de l'équipe</h2>
+            <div class="team-details-list">
+              <p><strong>Nom :</strong> ${team.full_name}</p>
+              <p><strong>Ville :</strong> ${team.city}</p>
+              <p><strong>Abréviation :</strong> ${team.abbreviation}</p>
+              <p><strong>Conférence :</strong> ${team.conference}</p>
+              <p><strong>Division :</strong> ${team.division}</p>
+            </div>
+          </div>
+        `;
+      });
       teamSearchResults.appendChild(li);
     });
   });
