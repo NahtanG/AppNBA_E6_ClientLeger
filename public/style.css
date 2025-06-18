@@ -231,6 +231,44 @@ main {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.1);
 }
 
+/* Style commun pour les deux sections de recherche */
+#search-section,
+#team-search-section {
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px 0 #0001;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Fond différent pour chaque section si besoin */
+#search-section {
+  background: #f7f7fa;
+}
+#team-search-section {
+  background: #eaf3ff;
+}
+
+/* Responsive : même largeur et padding sur mobile */
+@media (max-width: 700px) {
+  #search-section,
+  #team-search-section {
+    width: 96vw;
+    max-width: 96vw;
+    min-width: 0;
+    margin: 0 auto 14px auto;
+    padding: 14px 2vw;
+    box-sizing: border-box;
+  }
+}
+
 /* Responsive layout using flexbox */
 .main-container {
   display: flex;
