@@ -194,6 +194,7 @@ function createGameCard(game, isLastGame = false) {
   let cardClass = "game-score";
   let statusText = "";
   let matchState = "";
+  let scoreHtml = "";
 
   // Détection du statut
   const status = (game.status || "").toLowerCase();
@@ -218,16 +219,26 @@ function createGameCard(game, isLastGame = false) {
   } else if (isLive) {
     cardClass += " live";
     statusText = "En cours";
-    // Affiche l'état du match (quart-temps, pause, etc.)
     matchState = `<div class="period">${game.status}${game.time && game.time !== "Final" ? " - " + game.time : ""}</div>`;
   } else {
     statusText = "À venir";
+  }
+
+  // Affiche le score si le match est terminé ou en cours (score non nul)
+  if (isFinal || isLive) {
+    scoreHtml = `
+      <div class="score">
+        <span>${game.home_team.full_name} : <strong>${game.home_team_score}</strong></span>
+        <span>${game.visitor_team.full_name} : <strong>${game.visitor_team_score}</strong></span>
+      </div>
+    `;
   }
 
   return `
     <div class="${cardClass}" data-id="${game.id}" data-home="${game.home_team.id}" data-visitor="${game.visitor_team.id}">
       <strong>${game.home_team.full_name} vs ${game.visitor_team.full_name}</strong>
       <div class="date">${dateFormatted}</div>
+      ${scoreHtml}
       <div class="status">${statusText}</div>
       ${matchState}
       ${game.postseason ? '<span class="playoff-tag">🏆 Match de playoffs</span>' : ""}
