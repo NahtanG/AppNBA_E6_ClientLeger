@@ -189,7 +189,8 @@ async function fetchGames() {
 }
 
 function createGameCard(game, isLastGame = false) {
-  const dateFormatted = new Date(game.date).toLocaleDateString("fr-FR", {
+  const dateFormatted = new Date(game.date).toLocaleString("fr-FR", {
+    timeZone: "Europe/Paris",
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -197,35 +198,26 @@ function createGameCard(game, isLastGame = false) {
     minute: "2-digit",
   });
 
-  const isLive = game.status.toLowerCase().includes("in progress");
-  const isFinal = game.status === "Final";
-  const isUpcoming = !isFinal && !isLive;
-  const isPlayoff = game.postseason;
+  let cardClass = "game-score";
+  let statusText = "";
 
-  const cardClass = isLive
-    ? "game-score live"
-    : isFinal
-      ? "game-score final"
-      : "game-score";
-
-  const statusText = isFinal ? "Terminé" : isLive ? "En cours" : "À venir";
-
-  const scoreText = isLive
-    ? `<div class="period">⏱ Quart temps actuel : ${game.period}</div>`
-    : isFinal
-      ? `Score final : ${game.home_team_score} - ${game.visitor_team_score}`
-      : "";
+  if (game.postseason) cardClass += " playoff";
+  if (game.status === "Final") {
+    cardClass += " final";
+    statusText = "Terminé";
+  } else if (game.status === "In Progress") {
+    cardClass += " live";
+    statusText = "En cours";
+  } else {
+    statusText = "À venir";
+  }
 
   return `
-    <div class="${cardClass}${isPlayoff ? " playoff" : ""}"
-         data-id="${game.id}"
-         data-home="${game.home_team.id}"
-         data-visitor="${game.visitor_team.id}">
-      <strong>${game.home_team.full_name}</strong> vs <strong>${game.visitor_team.full_name}</strong><br>
-      ${scoreText}
-      <div class="status">${statusText}</div>
+    <div class="${cardClass}" data-id="${game.id}" data-home="${game.home_team.id}" data-visitor="${game.visitor_team.id}">
+      <strong>${game.home_team.full_name} vs ${game.visitor_team.full_name}</strong>
       <div class="date">${dateFormatted}</div>
-      ${isPlayoff ? `<div class="playoff-tag">🏆 Match de playoffs</div>` : ""}
+      <div class="status">${statusText}</div>
+      ${game.postseason ? '<span class="playoff-tag">🏆 Match de playoffs</span>' : ""}
     </div>
   `;
 }
