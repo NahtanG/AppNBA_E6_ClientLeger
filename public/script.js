@@ -189,25 +189,39 @@ async function fetchGames() {
 }
 
 function createGameCard(game, isLastGame = false) {
-  const dateFormatted = formatDateToFrench(game.date);
+  const dateFormatted = formatDateToFrench(game.datetime || game.date);
 
   let cardClass = "game-score";
   let statusText = "";
+  let matchState = "";
 
-  if (game.postseason) cardClass += " playoff";
-  const statusLower = (game.status || "").toLowerCase();
-  if (statusLower === "final") {
+  // Détection du statut
+  const status = (game.status || "").toLowerCase();
+  const isFinal = status === "final";
+  const isScheduled = status === "scheduled" || status === "not started" || status === "à venir" || !status || status.match(/^\d{4}-\d{2}-\d{2}/);
+
+  // Un match est "en cours" si status contient quarter, qtr, halftime, OT, ou time non null et pas "Final"
+  const isLive =
+    !isFinal &&
+    !isScheduled &&
+    (
+      status.includes("qtr") ||
+      status.includes("quarter") ||
+      status.includes("half") ||
+      status.includes("ot") ||
+      (game.time && game.time !== "Final" && game.time !== null)
+    );
+
+  if (isFinal) {
     cardClass += " final";
     statusText = "Terminé";
-  } else if (
-    statusLower === "scheduled" ||
-    statusLower === "not started" ||
-    statusLower === "à venir"
-  ) {
-    statusText = "À venir";
-  } else {
+  } else if (isLive) {
     cardClass += " live";
     statusText = "En cours";
+    // Affiche l'état du match (quart-temps, pause, etc.)
+    matchState = `<div class="period">${game.status}${game.time && game.time !== "Final" ? " - " + game.time : ""}</div>`;
+  } else {
+    statusText = "À venir";
   }
 
   return `
@@ -215,6 +229,7 @@ function createGameCard(game, isLastGame = false) {
       <strong>${game.home_team.full_name} vs ${game.visitor_team.full_name}</strong>
       <div class="date">${dateFormatted}</div>
       <div class="status">${statusText}</div>
+      ${matchState}
       ${game.postseason ? '<span class="playoff-tag">🏆 Match de playoffs</span>' : ""}
     </div>
   `;
