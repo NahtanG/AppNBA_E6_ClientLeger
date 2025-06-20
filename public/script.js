@@ -224,12 +224,12 @@ function createGameCard(game, isLastGame = false) {
     statusText = "À venir";
   }
 
-  // Affiche le score si le match est terminé ou en cours (score non nul)
+  // Affiche le score si le match est terminé ou en cours (score non nul), avec abréviation
   if (isFinal || isLive) {
     scoreHtml = `
       <div class="score">
-        <span>${game.home_team.full_name} : <strong>${game.home_team_score}</strong></span>
-        <span>${game.visitor_team.full_name} : <strong>${game.visitor_team_score}</strong></span>
+        <span>${game.home_team.abbreviation} : <strong>${game.home_team_score}</strong></span>
+        <span>${game.visitor_team.abbreviation} : <strong>${game.visitor_team_score}</strong></span>
       </div>
     `;
   }
