@@ -195,14 +195,19 @@ function createGameCard(game, isLastGame = false) {
   let statusText = "";
 
   if (game.postseason) cardClass += " playoff";
-  if (game.status === "Final") {
+  const statusLower = (game.status || "").toLowerCase();
+  if (statusLower === "final") {
     cardClass += " final";
     statusText = "Terminé";
-  } else if (game.status === "In Progress") {
+  } else if (
+    statusLower === "scheduled" ||
+    statusLower === "not started" ||
+    statusLower === "à venir"
+  ) {
+    statusText = "À venir";
+  } else {
     cardClass += " live";
     statusText = "En cours";
-  } else {
-    statusText = "À venir";
   }
 
   return `
