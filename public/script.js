@@ -189,14 +189,7 @@ async function fetchGames() {
 }
 
 function createGameCard(game, isLastGame = false) {
-  const dateFormatted = new Date(game.date).toLocaleString("fr-FR", {
-    timeZone: "Europe/Paris",
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const dateFormatted = formatDateToFrench(game.date);
 
   let cardClass = "game-score";
   let statusText = "";
@@ -265,5 +258,20 @@ document.addEventListener("click", async (event) => {
     window.scrollTo({ top: infoDiv.offsetTop - 20, behavior: "smooth" });
   }
 });
+
+function formatDateToFrench(dateStr) {
+  const date = new Date(dateStr);
+  // Décale en heure française
+  const options = {
+    timeZone: "Europe/Paris",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  return date.toLocaleString("fr-FR", options);
+}
 
 fetchGames();
