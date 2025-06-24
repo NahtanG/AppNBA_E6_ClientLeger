@@ -169,12 +169,15 @@ async function fetchGames() {
 
       if (lastGame) {
         lastGameDiv.innerHTML = createGameCard(lastGame, true);
+        loadComments(lastGame.id); // <-- Ajouté
       } else {
         lastGameDiv.innerHTML = "<p>Aucun match terminé récemment.</p>";
       }
 
       if (upcomingGames.length > 0) {
         upcomingGamesDiv.innerHTML = upcomingGames.map(createGameCard).join("");
+        // Appelle loadComments pour chaque match à venir
+        upcomingGames.forEach((game) => loadComments(game.id));
       } else {
         upcomingGamesDiv.innerHTML = "<p>Aucun match à venir.</p>";
       }
@@ -329,7 +332,6 @@ function createGameCard(game, isLastGame = false) {
       <div id="comments-${gameId}"></div>
       <div id="comments-list-${gameId}"></div>
     </div>
-    <script>loadComments('${gameId}');</script>
   `;
 }
 
