@@ -207,53 +207,48 @@ function showCommentForm(gameId) {
   if (!container) return;
   const userId = getUserId();
 
-  // Vérifie si l'utilisateur a déjà un avis
+  // Récupère l'avis existant pour pré-remplir si besoin
   fetch(`/api/comments?gameId=${gameId}`)
     .then((res) => res.json())
     .then((comments) => {
       const myComment = comments.find((c) => c.userId === userId);
-      if (myComment) {
-        container.innerHTML = `
-          <div class="comment-message error">Vous avez déjà donné un avis pour ce match.</div>
-          <button class="edit-comment-btn" onclick="editMyComment('${gameId}')">Modifier mon avis</button>
-        `;
-      } else {
-        container.innerHTML = `
-          <form id="comment-form-${gameId}">
-            <label>Note (0-5) : <input type="number" min="0" max="5" required name="note" /></label>
-            <br>
-            <label>Commentaire (optionnel) :<br>
-              <textarea name="text" rows="2" cols="30"></textarea>
-            </label>
-            <br>
-            <button type="submit">Envoyer mon avis</button>
-          </form>
-          <div id="comment-message-${gameId}" class="comment-message"></div>
-        `;
-        document.getElementById(`comment-form-${gameId}`).onsubmit = async (
-          e
-        ) => {
-          e.preventDefault();
-          const note = Number(e.target.note.value);
-          const text = e.target.text.value;
-          const userId = getUserId();
-          const res = await fetch("/api/comments", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ gameId, userId, note, text }),
-          });
-          const msgDiv = document.getElementById(`comment-message-${gameId}`);
-          if (res.ok) {
-            msgDiv.textContent = "Avis enregistré !";
-            loadComments(gameId);
-          } else {
-            const err = await res.json().catch(() => ({}));
-            msgDiv.textContent =
-              "Erreur lors de l'envoi : " + (err.error || res.statusText);
-            msgDiv.classList.toggle("error", !res.ok);
-          }
-        };
-      }
+      container.innerHTML = `
+        <form id="comment-form-${gameId}">
+          <label>Note (0-5) : <input type="number" min="0" max="5" required name="note" value="${myComment ? myComment.note : ""}" /></label>
+          <br>
+          <label>Commentaire (optionnel) :<br>
+            <textarea name="text" rows="2" cols="30">${myComment ? myComment.text || "" : ""}</textarea>
+          </label>
+          <br>
+          <button type="submit">Envoyer ou modifier mon avis</button>
+        </form>
+        <div id="comment-message-${gameId}" class="comment-message"></div>
+      `;
+      document.getElementById(`comment-form-${gameId}`).onsubmit = async (
+        e
+      ) => {
+        e.preventDefault();
+        const note = Number(e.target.note.value);
+        const text = e.target.text.value;
+        const userId = getUserId();
+        const res = await fetch("/api/comments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ gameId, userId, note, text }),
+        });
+        const msgDiv = document.getElementById(`comment-message-${gameId}`);
+        if (res.ok) {
+          msgDiv.textContent = myComment
+            ? "Avis modifié !"
+            : "Avis enregistré !";
+          loadComments(gameId);
+        } else {
+          const err = await res.json().catch(() => ({}));
+          msgDiv.textContent =
+            "Erreur lors de l'envoi : " + (err.error || res.statusText);
+          msgDiv.classList.toggle("error", !res.ok);
+        }
+      };
     });
 }
 
@@ -453,55 +448,5 @@ function deleteMyComment(gameId) {
           container.innerHTML = "";
         }, 2000);
       }
-    });
-}
-
-function editMyComment(gameId) {
-  fetch(`/api/comments?gameId=${gameId}`)
-    .then((res) => res.json())
-    .then((comments) => {
-      const userId = getUserId();
-      const myComment = comments.find((c) => c.userId === userId);
-      if (!myComment) return;
-      const container = document.getElementById(`comments-${gameId}`);
-      if (!container) return;
-      container.innerHTML = `
-        <form id="comment-form-${gameId}">
-          <label>Note (0-5) : <input type="number" min="0" max="5" required name="note" value="${myComment.note}" /></label>
-          <br>
-          <label>Commentaire (optionnel) :<br>
-            <textarea name="text" rows="2" cols="30">${myComment.text || ""}</textarea>
-          </label>
-          <br>
-          <div style="display:flex;gap:10px;">
-            <button type="submit">Envoyer mon avis</button>
-            <button type="button" class="edit-comment-btn" onclick="loadComments('${gameId}')">Annuler</button>
-          </div>
-        </form>
-        <div id="comment-message-${gameId}" class="comment-message"></div>
-      `;
-      document.getElementById(`comment-form-${gameId}`).onsubmit = async (
-        e
-      ) => {
-        e.preventDefault();
-        const note = Number(e.target.note.value);
-        const text = e.target.text.value;
-        const userId = getUserId();
-        const res = await fetch("/api/comments", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ gameId, userId, note, text }),
-        });
-        const msgDiv = document.getElementById(`comment-message-${gameId}`);
-        if (res.ok) {
-          msgDiv.textContent = "Avis modifié !";
-          loadComments(gameId);
-        } else {
-          const err = await res.json().catch(() => ({}));
-          msgDiv.textContent =
-            "Erreur lors de la modification : " + (err.error || res.statusText);
-          msgDiv.classList.toggle("error", !res.ok);
-        }
-      };
     });
 }
