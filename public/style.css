@@ -859,6 +859,21 @@ body {
   background: #dbeafe;
 }
 
+.delete-comment-btn {
+  background: #fff0f0;
+  color: #e53935;
+  border: 1px solid #e53935;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-left: 10px;
+  font-size: 0.98em;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+.delete-comment-btn:hover {
+  background: #ffeaea;
+}
+
 /* Responsive */
 @media (max-width: 700px) {
   .comments-section {

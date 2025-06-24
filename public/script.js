@@ -252,19 +252,37 @@ async function loadComments(gameId, filter = "") {
     container.innerHTML = "<em>Aucun avis pour ce match.</em>";
     return;
   }
+  const userId = getUserId();
+  const myComment = comments.find((c) => c.userId === userId);
+
   // Moyenne
   const avg = (
     comments.reduce((s, c) => s + c.note, 0) / comments.length
   ).toFixed(2);
+
   container.innerHTML = `
-    <div>Note moyenne : <strong>${avg} / 5</strong></div>
-    <div>
+    <div class="comments-average">Note moyenne : <strong>${avg} / 5</strong></div>
+    <div class="comments-filters">
       <button onclick="loadComments('${gameId}', '')">Tous</button>
       <button onclick="loadComments('${gameId}', '24h')">24h</button>
       <button onclick="loadComments('${gameId}', '7d')">7j</button>
+      ${
+        myComment
+          ? `<button class="delete-comment-btn" onclick="deleteMyComment('${gameId}')">Supprimer mon avis</button>`
+          : ""
+      }
     </div>
     <ul>
-      ${comments.map((c) => `<li><b>Note :</b> ${c.note} ${c.text ? "— " + c.text : ""} <small>(${new Date(c.date).toLocaleString("fr-FR")})</small></li>`).join("")}
+      ${comments
+        .map(
+          (c) =>
+            `<li${c.userId === userId ? ' style="background:#e3f6ff;border-left:4px solid #e53935;"' : ""}><b>Note :</b> ${c.note} ${
+              c.text ? "— " + c.text : ""
+            } <small>(${new Date(c.date).toLocaleString("fr-FR")}${
+              c.userId === userId ? ", moi" : ""
+            })</small></li>`
+        )
+        .join("")}
     </ul>
   `;
 }
@@ -398,3 +416,20 @@ function formatDateToFrench(dateStr) {
 }
 
 fetchGames();
+
+function deleteMyComment(gameId) {
+  const userId = getUserId();
+  if (!confirm("Supprimer votre avis pour ce match ?")) return;
+  fetch("/api/comments", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ gameId, userId }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      loadComments(gameId);
+      const container = document.getElementById(`comments-${gameId}`);
+      if (container) container.innerHTML = "";
+    })
+    .catch(() => alert("Erreur lors de la suppression de l'avis."));
+}

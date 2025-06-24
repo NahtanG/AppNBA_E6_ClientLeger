@@ -40,5 +40,20 @@ export default async function handler(req, res) {
     return res.status(201).json({ success: true });
   }
 
+  if (method === "DELETE") {
+    const { gameId, userId } = req.body;
+    if (!gameId || !userId)
+      return res.status(400).json({ error: "gameId et userId requis" });
+
+    const before = comments.length;
+    comments = comments.filter(
+      (c) => !(c.gameId === gameId && c.userId === userId)
+    );
+    if (comments.length === before)
+      return res.status(404).json({ error: "Avis non trouvé" });
+
+    return res.status(200).json({ success: true });
+  }
+
   res.status(405).end();
 }
