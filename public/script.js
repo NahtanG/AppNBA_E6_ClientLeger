@@ -215,7 +215,7 @@ function showCommentForm(gameId) {
       <br>
       <button type="submit">Envoyer</button>
     </form>
-    <div id="comment-message-${gameId}"></div>
+    <div id="comment-message-${gameId}" class="comment-message"></div>
   `;
   document.getElementById(`comment-form-${gameId}`).onsubmit = async (e) => {
     e.preventDefault();
@@ -235,6 +235,7 @@ function showCommentForm(gameId) {
       const err = await res.json().catch(() => ({}));
       msgDiv.textContent =
         "Erreur lors de l'envoi : " + (err.error || res.statusText);
+      msgDiv.classList.toggle("error", !res.ok);
     }
   };
 }
@@ -328,10 +329,11 @@ function createGameCard(game, isLastGame = false) {
       ${matchState}
       ${game.postseason ? '<span class="playoff-tag">🏆 Match de playoffs</span>' : ""}
     </div>
-    <div>
+    <div class="comments-section">
+      <h3>Avis & notes des utilisateurs</h3>
       <button onclick="showCommentForm('${gameId}')">Donner mon avis</button>
       <div id="comments-${gameId}"></div>
-      <div id="comments-list-${gameId}"></div>
+      <div id="comments-list-${gameId}" class="comments-list"></div>
     </div>
   `;
 }

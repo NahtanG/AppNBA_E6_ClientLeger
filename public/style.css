@@ -705,3 +705,164 @@ body {
     box-sizing: border-box;
   }
 }
+
+/* Avis/commentaires sur les matchs */
+.comments-section {
+  margin: 18px 0 22px 0;
+  padding: 18px 16px;
+  background: #f7fafd;
+  border: 1.5px solid #dbeafe;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px 0 #0001;
+  max-width: 410px;
+  width: 100%;
+  transition: box-shadow 0.2s;
+}
+
+.comments-section:hover {
+  box-shadow: 0 4px 18px 0 #007bff22;
+}
+
+.comments-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2451a6;
+  margin-bottom: 10px;
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+#comments-list-[id] ul,
+.comments-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+#comments-list-[id] li,
+.comments-list li {
+  background: #fff;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 4px #007bff11;
+  border-left: 4px solid #007bff;
+  font-size: 1rem;
+  color: #222;
+  transition: background 0.15s;
+  position: relative;
+}
+
+#comments-list-[id] li b,
+.comments-list li b {
+  color: #2451a6;
+  font-weight: 600;
+}
+
+#comments-list-[id] li small,
+.comments-list li small {
+  color: #888;
+  font-size: 0.85em;
+  margin-left: 8px;
+}
+
+.comments-section form {
+  margin-bottom: 10px;
+  background: #eaf3ff;
+  padding: 12px 10px 10px 10px;
+  border-radius: 8px;
+  border: 1px solid #cce5ff;
+  box-shadow: 0 1px 4px #007bff11;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comments-section label {
+  font-size: 1rem;
+  color: #2451a6;
+  font-weight: 500;
+}
+
+.comments-section input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #b6d4fe;
+  margin-left: 6px;
+  font-size: 1rem;
+}
+
+.comments-section textarea {
+  width: 100%;
+  min-height: 40px;
+  border-radius: 5px;
+  border: 1px solid #b6d4fe;
+  padding: 6px;
+  font-size: 1rem;
+  resize: vertical;
+  background: #fafdff;
+}
+
+.comments-section button[type="submit"] {
+  align-self: flex-end;
+  background: #2451a6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.15s;
+}
+
+.comments-section button[type="submit"]:hover {
+  background: #007bff;
+}
+
+.comments-section .comment-message {
+  margin-top: 6px;
+  color: #388e3c;
+  font-weight: 500;
+  font-size: 0.98em;
+}
+
+.comments-section .comment-message.error {
+  color: #d32f2f;
+}
+
+.comments-section .comments-average {
+  font-size: 1.08em;
+  font-weight: 600;
+  color: #2451a6;
+  margin-bottom: 8px;
+}
+
+.comments-section .comments-filters {
+  margin-bottom: 8px;
+}
+
+.comments-section .comments-filters button {
+  background: #eaf3ff;
+  color: #2451a6;
+  border: 1px solid #b6d4fe;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-right: 6px;
+  font-size: 0.98em;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.comments-section .comments-filters button:hover {
+  background: #dbeafe;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .comments-section {
+    max-width: 98vw;
+    padding: 10px 2vw;
+  }
+}
