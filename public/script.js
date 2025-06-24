@@ -188,6 +188,83 @@ async function fetchGames() {
   }
 }
 
+// Génère un userId unique si absent
+function getUserId() {
+  let id = localStorage.getItem("nba_user_id");
+  if (!id) {
+    id = "user_" + Math.random().toString(36).slice(2, 12);
+    localStorage.setItem("nba_user_id", id);
+  }
+  return id;
+}
+
+// Affiche le formulaire d'avis sous la carte de match sélectionnée
+function showCommentForm(gameId) {
+  const container = document.getElementById(`comments-${gameId}`);
+  if (!container) return;
+  container.innerHTML = `
+    <form id="comment-form-${gameId}">
+      <label>Note (0-5) : <input type="number" min="0" max="5" required name="note" /></label>
+      <br>
+      <label>Commentaire (optionnel) :<br>
+        <textarea name="text" rows="2" cols="30"></textarea>
+      </label>
+      <br>
+      <button type="submit">Envoyer</button>
+    </form>
+    <div id="comment-message-${gameId}"></div>
+  `;
+  document.getElementById(`comment-form-${gameId}`).onsubmit = async (e) => {
+    e.preventDefault();
+    const note = Number(e.target.note.value);
+    const text = e.target.text.value;
+    const userId = getUserId();
+    const res = await fetch("/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId, userId, note, text }),
+    });
+    if (res.ok) {
+      document.getElementById(`comment-message-${gameId}`).textContent =
+        "Avis enregistré !";
+      loadComments(gameId);
+    } else {
+      document.getElementById(`comment-message-${gameId}`).textContent =
+        "Erreur lors de l'envoi.";
+    }
+  };
+}
+
+// Charge et affiche les avis pour un match
+async function loadComments(gameId, filter = "") {
+  const res = await fetch(
+    `/api/comments?gameId=${gameId}${filter ? "&filter=" + filter : ""}`
+  );
+  const comments = await res.json();
+  const container = document.getElementById(`comments-list-${gameId}`);
+  if (!container) return;
+  if (comments.length === 0) {
+    container.innerHTML = "<em>Aucun avis pour ce match.</em>";
+    return;
+  }
+  // Moyenne
+  const avg = (
+    comments.reduce((s, c) => s + c.note, 0) / comments.length
+  ).toFixed(2);
+  container.innerHTML = `
+    <div>Note moyenne : <strong>${avg} / 5</strong></div>
+    <div>
+      <button onclick="loadComments('${gameId}', '')">Tous</button>
+      <button onclick="loadComments('${gameId}', '24h')">24h</button>
+      <button onclick="loadComments('${gameId}', '7d')">7j</button>
+    </div>
+    <ul>
+      ${comments.map((c) => `<li><b>Note :</b> ${c.note} ${c.text ? "— " + c.text : ""} <small>(${new Date(c.date).toLocaleString("fr-FR")})</small></li>`).join("")}
+    </ul>
+  `;
+}
+
+// Ajoute l'affichage des avis et du bouton sur chaque carte de match
 function createGameCard(game, isLastGame = false) {
   const dateFormatted = formatDateToFrench(game.datetime || game.date);
 
@@ -199,19 +276,22 @@ function createGameCard(game, isLastGame = false) {
   // Détection du statut
   const status = (game.status || "").toLowerCase();
   const isFinal = status === "final";
-  const isScheduled = status === "scheduled" || status === "not started" || status === "à venir" || !status || status.match(/^\d{4}-\d{2}-\d{2}/);
+  const isScheduled =
+    status === "scheduled" ||
+    status === "not started" ||
+    status === "à venir" ||
+    !status ||
+    status.match(/^\d{4}-\d{2}-\d{2}/);
 
   // Un match est "en cours" si status contient quarter, qtr, halftime, OT, ou time non null et pas "Final"
   const isLive =
     !isFinal &&
     !isScheduled &&
-    (
-      status.includes("qtr") ||
+    (status.includes("qtr") ||
       status.includes("quarter") ||
       status.includes("half") ||
       status.includes("ot") ||
-      (game.time && game.time !== "Final" && game.time !== null)
-    );
+      (game.time && game.time !== "Final" && game.time !== null));
 
   if (isFinal) {
     cardClass += " final";
@@ -234,6 +314,7 @@ function createGameCard(game, isLastGame = false) {
     `;
   }
 
+  const gameId = game.id;
   return `
     <div class="${cardClass}" data-id="${game.id}" data-home="${game.home_team.id}" data-visitor="${game.visitor_team.id}">
       <strong>${game.home_team.full_name} vs ${game.visitor_team.full_name}</strong>
@@ -243,6 +324,12 @@ function createGameCard(game, isLastGame = false) {
       ${matchState}
       ${game.postseason ? '<span class="playoff-tag">🏆 Match de playoffs</span>' : ""}
     </div>
+    <div>
+      <button onclick="showCommentForm('${gameId}')">Donner mon avis</button>
+      <div id="comments-${gameId}"></div>
+      <div id="comments-list-${gameId}"></div>
+    </div>
+    <script>loadComments('${gameId}');</script>
   `;
 }
 
