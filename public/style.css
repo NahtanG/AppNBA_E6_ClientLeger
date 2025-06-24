@@ -874,10 +874,32 @@ body {
   background: #ffeaea;
 }
 
+.edit-comment-btn {
+  background: #eaf3ff;
+  color: #2451a6;
+  border: 1px solid #b6d4fe;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-left: 6px;
+  font-size: 0.98em;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+.edit-comment-btn:hover {
+  background: #dbeafe;
+}
+
 /* Responsive */
 @media (max-width: 700px) {
   .comments-section {
     max-width: 98vw;
     padding: 10px 2vw;
   }
+}
+
+.my-comment {
+  background: #e3f6ff !important;
+  border-left: 4px solid #e53935 !important;
+  box-shadow: 0 2px 8px #007bff22;
+  position: relative;
 }
