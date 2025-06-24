@@ -280,8 +280,7 @@ async function loadComments(gameId, filter = "") {
       <button onclick="loadComments('${gameId}', '7d')">7j</button>
       ${
         myComment
-          ? `<button class="edit-comment-btn" onclick="editMyComment('${gameId}')">Modifier mon avis</button>
-             <button class="delete-comment-btn" onclick="deleteMyComment('${gameId}')">Supprimer mon avis</button>`
+          ? `<button class="delete-comment-btn" onclick="deleteMyComment('${gameId}')">Supprimer mon avis</button>`
           : ""
       }
     </div>
