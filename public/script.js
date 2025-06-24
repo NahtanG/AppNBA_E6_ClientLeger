@@ -227,13 +227,14 @@ function showCommentForm(gameId) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId, userId, note, text }),
     });
+    const msgDiv = document.getElementById(`comment-message-${gameId}`);
     if (res.ok) {
-      document.getElementById(`comment-message-${gameId}`).textContent =
-        "Avis enregistré !";
+      msgDiv.textContent = "Avis enregistré !";
       loadComments(gameId);
     } else {
-      document.getElementById(`comment-message-${gameId}`).textContent =
-        "Erreur lors de l'envoi.";
+      const err = await res.json().catch(() => ({}));
+      msgDiv.textContent =
+        "Erreur lors de l'envoi : " + (err.error || res.statusText);
     }
   };
 }

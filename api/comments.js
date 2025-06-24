@@ -36,8 +36,9 @@ export default async function handler(req, res) {
   }
 
   if (method === "POST") {
-    const { gameId, userId, note, text } = req.body;
-    if (typeof note !== "number" || note < 0 || note > 5)
+    let { gameId, userId, note, text } = req.body;
+    if (typeof note !== "number") note = Number(note);
+    if (isNaN(note) || note < 0 || note > 5)
       return res.status(400).json({ error: "Note obligatoire entre 0 et 5" });
     if (!gameId || !userId)
       return res.status(400).json({ error: "gameId et userId requis" });
